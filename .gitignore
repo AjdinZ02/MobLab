@@ -1,0 +1,38 @@
+
+# OS
+.DS_Store
+Thumbs.db
+
+# .NET build artefacts
+bin/
+obj/
+[Bb]uild/
+[Dd]ebug*/
+[Rr]elease*/
+x64/
+x86/
+*.dll
+*.pdb
+*.exe
+
+# IDE
+.vscode/
+.idea/
+*.user
+*.rsuser
+*.suo
+
+# Logs & env
+*.log
+.env
+.env.*
+
+# Node.js
+node_modules/
+dist/
+build/
+
+# Output
+*.db
+*.sqlite
+*.
