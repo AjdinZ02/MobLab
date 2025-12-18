@@ -1,10 +1,6 @@
-
-// src/presentation/pages/ChangePasswordPage.ts
 import { changePassword } from "../../application/commands/user";
 
-/**
- * Renderuje formu za promjenu lozinke unutar zadatog kontejnera (bez Reacta).
- */
+
 export function mountChangePasswordPage(container: HTMLElement) {
   container.innerHTML = "";
 

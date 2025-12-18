@@ -1,14 +1,6 @@
-
-// src/application/commands/user.ts
-
-// Robustno rješenje za API base:
-// - koristi VITE_API_BASE_URL ako postoji,
-// - inače VITE_API_URL; ako nema /api sufiks, dodaj ga,
-// - fallback: "/api" (ako koristiš Vite proxy).
 function resolveApiBase(): string {
   const env = (import.meta as any).env || {};
   let base: string = env.VITE_API_BASE_URL || env.VITE_API_URL || "/api";
-  // osiguraj da se završava na /api
   if (!base.endsWith("/api")) {
     base = base.replace(/\/+$/, "") + "/api";
   }
@@ -29,9 +21,6 @@ function authHeaders(): Record<string, string> {
 
 // Ažuriranje profila (FullName/Email)
 export async function updateProfile(payload: { fullName?: string; email?: string }) {
-  // DEBUG: možeš obrisati nakon testiranja
-  // console.log("updateProfile API:", API, "headers:", authHeaders());
-
   const res = await fetch(`${API}/users/me`, {
     method: "PUT",
     headers: {
@@ -46,13 +35,12 @@ export async function updateProfile(payload: { fullName?: string; email?: string
     throw new Error(text || "Greška pri ažuriranju profila.");
   }
 
-  return res.json(); // očekuje UserProfileDto
+  return res.json(); 
 }
 
 // Promjena lozinke
 export async function changePassword(payload: { currentPassword: string; newPassword: string }) {
-  // DEBUG: možeš obrisati nakon testiranja
-  // console.log("changePassword API:", API, "headers:", authHeaders());
+ 
 
   const res = await fetch(`${API}/users/change-password`, {
     method: "PUT",
@@ -68,6 +56,5 @@ export async function changePassword(payload: { currentPassword: string; newPass
     throw new Error(text || "Greška pri promjeni lozinke.");
   }
 
-  // NoContent (204) → uspjeh bez tijela
   return true;
 }

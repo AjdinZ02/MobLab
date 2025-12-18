@@ -4,7 +4,7 @@ export interface ProductDto {
   id: number;
   name: string;
   price: number;
-  // imagePath može postojati u odgovoru, ali nije nužno u DTO-u ovdje
+  
 }
 
 export async function fetchProductsQuery(): Promise<ProductDto[]> {

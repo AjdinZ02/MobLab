@@ -50,7 +50,7 @@ export function renderReviewsPage(container: HTMLElement): void {
     </div>
   `;
 
-  // --- interakcija za zvjezdice ---
+  
   const stars = Array.from(document.querySelectorAll<HTMLSpanElement>('#rating-stars .star'));
   const ratingInput = document.getElementById('rating') as HTMLInputElement;
   const setActive = (n: number) => {
@@ -61,12 +61,12 @@ export function renderReviewsPage(container: HTMLElement): void {
     s.addEventListener('click', () => setActive(Number(s.dataset.value)));
     s.addEventListener('mouseenter', () => setActive(Number(s.dataset.value)));
   });
-  setActive(5); // default
+  setActive(5); 
 
-  // --- load & refresh list ---
+  // Load & refresh list
   refreshReviewsList();
 
-  // --- submit ---
+  // submit 
   const form = document.getElementById('add-review-form') as HTMLFormElement;
   const status = document.getElementById('form-status')!;
   form.addEventListener('submit', async (e) => {
@@ -105,7 +105,7 @@ export function renderReviewsPage(container: HTMLElement): void {
     }
   });
 
-  // --- clear ---
+  // clear 
   const clearBtn = document.getElementById('clear-btn') as HTMLButtonElement;
   clearBtn.addEventListener('click', () => {
     form.reset();

@@ -14,7 +14,7 @@ function resolveApiBase(): string {
   return base;
 }
 
-// Jedan izvor istine za API
+
 const API: string = resolveApiBase();
 
 function authHeaders(): Record<string, string> {

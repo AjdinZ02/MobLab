@@ -1,13 +1,8 @@
-
-// src/presentation/pages/ProfilePage.ts
 import { getProfile } from "../../application/queries/user";
 import { updateProfile } from "../../application/commands/user";
 
-/**
- * Renderuje stranicu profila unutar prosleđenog kontejnera (bez Reacta).
- */
+
 export async function mountProfilePage(container: HTMLElement): Promise<void> {
-  // Očisti postojeći sadržaj
   container.innerHTML = "";
 
   // Wrapper
@@ -52,7 +47,7 @@ export async function mountProfilePage(container: HTMLElement): Promise<void> {
     return;
   }
 
-  // Kreiraj formu
+  // Kreiranje forme
   const form = document.createElement("form");
   form.style.marginTop = "12px";
 

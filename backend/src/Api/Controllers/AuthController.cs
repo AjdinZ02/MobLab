@@ -30,7 +30,7 @@ namespace Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
-            // 1) Validacija ulaza (null-safe)
+            // 1) Validacija ulaza 
             var name = dto?.Name?.Trim();
             var emailRaw = dto?.Email?.Trim();
             var password = dto?.Password;
@@ -79,7 +79,7 @@ namespace Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-            // 1) Validacija ulaza (null-safe)
+            // 1) Validacija ulaza 
             var emailRaw = dto?.Email?.Trim();
             var password = dto?.Password;
 

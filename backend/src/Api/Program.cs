@@ -15,7 +15,7 @@ using Infrastructure.Persistence.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Auth (JWT)
+// JWT Authentication
 builder.Services
     .AddAuthentication(options =>
     {
@@ -48,11 +48,11 @@ builder.Services.AddCors(options =>
             .WithOrigins("http://localhost:5173", "https://localhost:5173")
             .AllowAnyHeader()
             .AllowAnyMethod();
-        // .AllowCredentials(); // uključi samo ako koristiš cookie/session
+        // .AllowCredentials(); 
     });
 });
 
-// DB + Identity util
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -64,7 +64,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Swagger u Dev ili ako je flag omogućen
+
 var swaggerEnabled = app.Configuration.GetValue<bool>("Swagger:Enabled");
 if (app.Environment.IsDevelopment() || swaggerEnabled)
 {
@@ -73,7 +73,7 @@ if (app.Environment.IsDevelopment() || swaggerEnabled)
     app.UseSwaggerUI();
 }
 
-// Middleware redoslijed
+
 app.UseCors("Frontend");
 
 if (!app.Environment.IsDevelopment())
@@ -81,7 +81,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-// (opciono) eksplicitni odgovor na preflight
+
 app.MapMethods("{*path}", new[] { "OPTIONS" }, () => Results.Ok());
 
 app.UseAuthentication();
@@ -89,7 +89,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Ispis adresa/Swagger linka na startu (nije obavezno, ali korisno)
+
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 app.Lifetime.ApplicationStarted.Register(() =>
 {

@@ -11,6 +11,6 @@
 //     // Ako već imaš UserId, ostavi ga.
 //     public string? UserId { get; set; }
 
-//     // ⬇️ NOVO
+//     
 //     public string Email { get; set; } = default!;
 // }

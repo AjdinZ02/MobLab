@@ -17,12 +17,6 @@ function resolveApiBase(): string {
 
 const API: string = resolveApiBase();
 
-// ... ostatak fajla ostaje isti (fetch `${API}/auth/login
-
-
-/**
- * Renderuje stranicu za prijavu unutar prosleđenog kontejnera (bez Reacta).
- */
 export function renderLogin(container: HTMLElement) {
   // Očisti
   container.innerHTML = "";
@@ -78,7 +72,7 @@ export function renderLogin(container: HTMLElement) {
   btn.style.marginTop = "16px";
   btn.style.padding = "8px 12px";
 
-  // Link registracija (ispravno)
+  // Link registracija 
   const reg = document.createElement("p");
   reg.style.marginTop = "12px";
   reg.innerHTML = `Nemate račun? <a href="#/register">Registrujte se</a>`;
@@ -127,7 +121,7 @@ export function renderLogin(container: HTMLElement) {
     btn.textContent = "Prijavljivanje...";
 
     try {
-      // Poziv ka backendu: POST /api/auth/login
+      
       const res = await fetch(`${API}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -141,7 +135,7 @@ export function renderLogin(container: HTMLElement) {
 
       const data = (await res.json()) as LoginResponse;
 
-      // Snimi token i user u localStorage (tvoj app.ts ih koristi)
+      
       localStorage.setItem("token", data.token);
       localStorage.setItem(
         "user",
@@ -156,9 +150,9 @@ export function renderLogin(container: HTMLElement) {
       msg.textContent = "Uspješna prijava.";
       msg.style.display = "block";
 
-      // Preusmjeri na profil (ili na proizvode)
+      // Preusmjeri na profil 
       setTimeout(() => {
-        location.hash = "#/profile"; // može i "#/proizvodi" ako želiš
+        location.hash = "#/profile"; 
       }, 300);
     } catch (ex: any) {
       err.textContent = ex?.message ?? "Greška pri prijavi.";

@@ -26,7 +26,7 @@ export function renderRegister(container: HTMLElement): void {
   const statusEl = document.getElementById("register-status")!;
   const btn = document.getElementById("register-btn") as HTMLButtonElement;
 
-  const API_BASE = import.meta.env.VITE_API_BASE_URL; // ✅ koristi HTTPS iz .env
+  const API_BASE = import.meta.env.VITE_API_BASE_URL; 
 
   btn.addEventListener("click", async () => {
     const name = nameEl.value.trim();

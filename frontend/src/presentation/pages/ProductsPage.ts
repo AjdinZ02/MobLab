@@ -108,7 +108,7 @@ export function renderProducts(container: HTMLElement) {
       const products = await fetchProductsQuery();
       all = (products || []).map((p) => {
         const imagePath = ((p as any).imagePath as string | undefined)?.trim();
-        // Normaliziraj relativne putanje i izbjegni slučaj bez vodeće kose crte
+        
         let url = `data:image/svg+xml;utf8,${placeholderSvg}`;
         if (imagePath && imagePath.length > 0) {
           const normalized = imagePath.startsWith('http')

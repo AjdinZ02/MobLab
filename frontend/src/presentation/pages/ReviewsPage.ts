@@ -1,9 +1,3 @@
-
-// ReviewsPage.ts
-// Kompletna stranica sa listom recenzija, dodavanjem i uređivanjem putem modala (samo zvjezdice)
-// + Ikonica kantice za brisanje (Admin ili vlasnik)
-// + Korištenje API_BASE iz .env (zaobilazi Vite proxy i rješava 405 na 5173)
-
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '';
 
 export function renderReviewsPage(container: HTMLElement): void {
@@ -67,7 +61,7 @@ export function renderReviewsPage(container: HTMLElement): void {
     </div>
   `;
 
-  // ===== Inicijalizacija zvjezdica za ADD formu =====
+  // Inicijalizacija zvjezdica za ADD formu 
   const stars = Array.from(document.querySelectorAll<HTMLSpanElement>('#rating-stars .star'));
   const ratingInput = document.getElementById('rating') as HTMLInputElement;
   const setActive = (n: number) => {
@@ -77,7 +71,7 @@ export function renderReviewsPage(container: HTMLElement): void {
   stars.forEach(s => s.addEventListener('click', () => setActive(Number(s.dataset.value))));
   setActive(5);
 
-  // Očisti formu (opciono)
+  // Očisti formu 
   const clearBtn = document.getElementById('clear-btn') as HTMLButtonElement | null;
   clearBtn?.addEventListener('click', () => {
     (document.getElementById('productName') as HTMLInputElement).value = '';
@@ -97,7 +91,7 @@ export function renderReviewsPage(container: HTMLElement): void {
     renderReviews();
   }
 
-  // ===== JWT decode helper + normalizacija korisnika =====
+  // Dekodira JWT i vraća payload kao objekt
   function decodeJwtPayload(token?: string | null): Record<string, any> | null {
     try {
       if (!token) return null;
@@ -140,14 +134,14 @@ export function renderReviewsPage(container: HTMLElement): void {
       : null;
   }
 
-  // Tolerantno poređenje imena (radi i "Ajdin" vs "Ajdin Zahirović")
+  // Tolerantno poređenje imena 
   function likelySamePerson(userFullName?: string | null, reviewUserName?: string | null) {
     const norm = (s?: string | null) => (s ?? '').trim().toLowerCase();
     const a = norm(userFullName);
     const b = norm(reviewUserName);
     if (!a || !b) return false;
     if (a === b) return true;
-    const aFirst = a.split(/\s+/)[0]; // "ajdin"
+    const aFirst = a.split(/\s+/)[0]; 
     return aFirst === b || a.includes(b) || b.includes(aFirst);
   }
 
@@ -256,7 +250,7 @@ export function renderReviewsPage(container: HTMLElement): void {
     }
   });
 
-  // ===== Modal za UREĐIVANJE — SAMO ZVJEZDICE =====
+  // Modal za UREĐIVANJE 
   function openEditModal(reviewId: number) {
     const review = allReviews.find(r => r.reviewID === reviewId);
     if (!review) return;
@@ -268,7 +262,7 @@ export function renderReviewsPage(container: HTMLElement): void {
     modal.setAttribute("aria-modal", "true");
     modal.setAttribute("aria-label", "Uredi recenziju");
 
-    // Sadržaj modala (samo zvjezdice)
+    // Sadržaj modala 
     modal.innerHTML = `
       <div class="modal-content" tabindex="-1">
         <h3 style="margin-top:0">Uredi recenziju</h3>
@@ -298,7 +292,7 @@ export function renderReviewsPage(container: HTMLElement): void {
     const content = modal.querySelector(".modal-content") as HTMLElement;
     const statusEl = modal.querySelector("#edit-status") as HTMLElement;
 
-    // Zvjezdice u modalu
+    // Zvjezdice 
     const mStars = Array.from(content.querySelectorAll<HTMLSpanElement>("#edit-rating-stars .star"));
     const ratingHidden = content.querySelector("#edit-rating") as HTMLInputElement;
     const setModalActive = (n: number) => {
@@ -388,7 +382,7 @@ export function renderReviewsPage(container: HTMLElement): void {
     });
   }
 
-  // ===== Brisanje recenzije (Admin ili vlasnik) =====
+  // Brisanje recenzije (Admin ili vlasnik) 
   function openDeleteConfirm(reviewId: number) {
     const ok = confirm("Da li ste sigurni da želite obrisati ovu recenziju?");
     if (!ok) return;
@@ -430,7 +424,6 @@ function renderStars(n: number) {
   return [1,2,3,4,5].map(i => `<span class="star ${i<=n?'active':''}">★</span>`).join('');
 }
 
-/** Sigurno enkodira tekst (koristi se pri innerHTML-u). */
 function escapeHtml(str: string) {
   return String(str)
     .replace(/&/g,'&amp;')

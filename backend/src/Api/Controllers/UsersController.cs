@@ -70,7 +70,7 @@ namespace Api.Controllers
             {
                 var newEmail = model.Email.Trim().ToLowerInvariant();
 
-                // current email može biti null => pretvori u prazan string
+                
                 var currentEmail = (user.Email ?? string.Empty).ToLowerInvariant();
 
                 if (newEmail != currentEmail)
