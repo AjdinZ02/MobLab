@@ -8,6 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
+public class SetRoleDto
+{
+    public string Email { get; set; } = default!;
+    public string RoleName { get; set; } = default!; // "Admin" ili "User"
+}
+
 namespace Api.Controllers
 {
     [ApiController]
@@ -133,5 +139,34 @@ namespace Api.Controllers
 
             return NoContent();
         }
+        
+// PUT /api/users/set-role
+        [HttpPut("set-role")]
+// [Authorize(Roles = "Admin")] // uključi ovo kad budeš spreman
+        public async Task<IActionResult> SetRole([FromBody] SetRoleDto dto)
+        {
+            var email = dto?.Email?.Trim().ToLowerInvariant();
+            var roleName = dto?.RoleName?.Trim();
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(roleName))
+            return BadRequest("Email i RoleName su obavezni.");
+
+            var roleId = await _db.Roles
+            .Where(r => r.RoleName == roleName)
+            .Select(r => (int?)r.RoleID)
+            .FirstOrDefaultAsync();
+
+            if (!roleId.HasValue)
+            return NotFound($"Uloga '{roleName}' ne postoji.");
+
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user is null) return NotFound("Korisnik nije pronađen.");
+
+            user.RoleID = roleId.Value;
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
     }
 }

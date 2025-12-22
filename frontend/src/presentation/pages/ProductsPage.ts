@@ -1,4 +1,6 @@
+
 import { fetchProductsQuery } from '../../application/queries/fetchProducts';
+import { apiBaseUrl } from '../../infrastructure/http/client';
 
 const placeholderSvg = encodeURIComponent(
   `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240'>
@@ -17,6 +19,52 @@ const placeholderSvg = encodeURIComponent(
 );
 
 type ProductVM = { id: number; name: string; price: number; imageUrl: string };
+
+function safeNum(v: unknown, fallback = 0): number {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function pick<T extends object, K extends keyof T>(obj: T, keys: K[], fallback?: any) {
+  for (const k of keys) {
+    const val = (obj as any)[k];
+    if (val !== undefined && val !== null) return val;
+  }
+  return fallback;
+}
+
+/** 
+ * Normalizuje jedan proizvod iz API responsa u naš VM, 
+ * podržava i PascalCase i camelCase ključeve.
+ */
+function toVM(p: any): ProductVM {
+  // ID: ProductID | productID | id
+  const id = safeNum(p.ProductID ?? p.productID ?? p.id, NaN);
+
+  // Ime: ModelName | modelName | Name | name
+  const name =
+    pick(p, ['ModelName', 'modelName', 'Name', 'name'], 'Proizvod') as string;
+
+  // Cijena: Price | price | Cost | cost
+  const price = safeNum(p.Price ?? p.price ?? p.Cost ?? p.cost, 0);
+
+  // Slika: ImagePath | imagePath | ImageUrl | imageUrl
+  let imagePath = pick(p, ['ImagePath', 'imagePath', 'ImageUrl', 'imageUrl'], '') as string;
+  imagePath = (imagePath || '').trim();
+
+  // Ako nema slike, koristi SVG placeholder
+  let imageUrl = `data:image/svg+xml;utf8,${placeholderSvg}`;
+
+  if (imagePath) {
+    const normalized = imagePath.startsWith('http')
+      ? imagePath
+      : (imagePath.startsWith('/') ? imagePath : `/${imagePath}`);
+    // Slike serviraj sa backend origin-a (ne sa :5173)
+    imageUrl = `${apiBaseUrl}${normalized}`;
+  }
+
+  return { id, name, price, imageUrl };
+}
 
 export function renderProducts(container: HTMLElement) {
   container.innerHTML = `
@@ -76,6 +124,7 @@ export function renderProducts(container: HTMLElement) {
           <div class="card-body">
             <div class="card-title">${p.name}</div>
             <div class="price">${(p.price ?? 0).toLocaleString('bs-BA', { style: 'currency', currency: 'BAM' })}</div>
+            <button class="btn btn-primary add-to-cart" data-id="${p.id}">Dodaj u korpu</button>
           </div>
         </article>`
       )
@@ -103,26 +152,66 @@ export function renderProducts(container: HTMLElement) {
     renderGrid(shown);
   });
 
+  // Dodavanje u korpu (robustan ID parsing)
+  
+container.addEventListener('click', async (e) => {
+  const el = e.target as HTMLElement;
+  if (!el.classList.contains('add-to-cart')) return;
+
+  // ⬇⬇⬇ Zaštita: ako je dugme već "busy", ne radi ništa
+  if (el.getAttribute('data-busy') === '1') {
+    return;
+  }
+
+  const pidStr = el.getAttribute('data-id') ?? '';
+  const pid = Number(pidStr);
+  if (!Number.isFinite(pid) || pid <= 0) {
+    console.error('[add-to-cart] Neispravan productId', { pidStr });
+    alert('Greška: neispravan proizvod.');
+    return;
+  }
+
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Prijavi se da bi dodao u korpu.');
+    location.hash = '#/login';
+    return;
+  }
+
+  // ⬇⬇⬇ Označi dugme kao "busy" i onemogući klik
+  el.setAttribute('data-busy', '1');
+  (el as HTMLButtonElement).disabled = true;
+  const originalText = el.textContent;
+  el.textContent = 'Dodajem…';
+
+  try {
+    const { addToWishlist } = await import('../../infrastructure/http/wishlist'); // lazy import
+    await addToWishlist(pid);
+    el.textContent = 'Dodano ✓';
+
+    // (opcionalno) osveži korpu nakon dodavanja
+    // location.hash = '#/korpa'; // ili pozovi load() na wishlist strani
+    setTimeout(() => { el.textContent = originalText ?? 'Dodaj u korpu'; }, 1200);
+  } catch (err: any) {
+    console.error('[add-to-cart] error', err);
+    alert(err?.message ?? 'Greška');
+    el.textContent = originalText ?? 'Dodaj u korpu';
+  } finally {
+    // ⬇⬇⬇ Uvijek skini "busy" i omogući dugme
+    el.removeAttribute('data-busy');
+    (el as HTMLButtonElement).disabled = false;
+  }
+});
+
+
   (async () => {
     try {
       const products = await fetchProductsQuery();
-      all = (products || []).map((p) => {
-        const imagePath = ((p as any).imagePath as string | undefined)?.trim();
-        
-        let url = `data:image/svg+xml;utf8,${placeholderSvg}`;
-        if (imagePath && imagePath.length > 0) {
-          const normalized = imagePath.startsWith('http')
-            ? imagePath
-            : (imagePath.startsWith('/') ? imagePath : `/${imagePath}`);
-          url = new URL(normalized, window.location.origin).toString();
-        }
-        return {
-          id: (p as any).id,
-          name: (p as any).name ?? 'Proizvod',
-          price: Number((p as any).price ?? 0),
-          imageUrl: url
-        } as ProductVM;
-      });
+
+      // 🔎 (Opcionalno) loguj sample da potvrdiš ključne nazive:
+      // console.log('products sample', products?.[0]);
+
+      all = (products || []).map(toVM);
       shown = [...all];
       renderGrid(shown);
     } catch (e) {
@@ -131,5 +220,3 @@ export function renderProducts(container: HTMLElement) {
     }
   })();
 }
-
-
