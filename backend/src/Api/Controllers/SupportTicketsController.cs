@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Application.Dtos;
-using Infrastructure.Persistence;            // AppDbContext
-using Infrastructure.Persistence.Entities;  // SupportTicket
+using Infrastructure.Persistence;            
+using Infrastructure.Persistence.Entities;  
 
 namespace Api.Controllers
 {
@@ -59,7 +59,7 @@ namespace Api.Controllers
         }
 
         // GET: /api/supporttickets
-        // (opciono - brzi pregled svih, npr. admin)
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SupportTicketDto>>> GetAll([FromQuery] int take = 50)
         {

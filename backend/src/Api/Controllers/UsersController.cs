@@ -142,7 +142,7 @@ namespace Api.Controllers
         
 // PUT /api/users/set-role
         [HttpPut("set-role")]
-// [Authorize(Roles = "Admin")] // uključi ovo kad budeš spreman
+// [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> SetRole([FromBody] SetRoleDto dto)
         {
             var email = dto?.Email?.Trim().ToLowerInvariant();

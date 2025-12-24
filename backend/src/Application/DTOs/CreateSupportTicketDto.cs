@@ -5,6 +5,6 @@ namespace Application.Dtos
     {
         public string Subject { get; set; } = default!;
         public string Description { get; set; } = default!;
-        public int? UserID { get; set; } // opciono: ako želiš postaviti korisnika ručno
+        public int? UserID { get; set; } 
     }
 }

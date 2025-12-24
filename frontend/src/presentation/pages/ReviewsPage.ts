@@ -167,7 +167,7 @@ export function renderReviewsPage(container: HTMLElement): void {
           (user.id != null && user.id === r.userID) ||
           (r.userID == null && likelySamePerson(user.fullName, r.userName))
         );
-        const canDelete = canEdit; // ista pravila za brisanje
+        const canDelete = canEdit; 
         return `
           <div class="review-item">
             <div>

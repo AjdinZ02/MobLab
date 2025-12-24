@@ -8,7 +8,6 @@ namespace Application.Dtos
         public string ModelName { get; set; } = string.Empty;
         public decimal? Price { get; set; }
         public string? ImagePath { get; set; }
-        // ⬇ umjesto DateTime? koristimo string (ISO yyyy-MM-dd)
         public string? DateAdded { get; set; }
     }
 }

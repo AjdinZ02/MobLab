@@ -158,7 +158,7 @@ container.addEventListener('click', async (e) => {
   const el = e.target as HTMLElement;
   if (!el.classList.contains('add-to-cart')) return;
 
-  // ⬇⬇⬇ Zaštita: ako je dugme već "busy", ne radi ništa
+  // Zaštita: ako je dugme već "busy", ne radi ništa
   if (el.getAttribute('data-busy') === '1') {
     return;
   }
@@ -178,7 +178,7 @@ container.addEventListener('click', async (e) => {
     return;
   }
 
-  // ⬇⬇⬇ Označi dugme kao "busy" i onemogući klik
+  // Označi dugme kao "busy" i onemogući klik
   el.setAttribute('data-busy', '1');
   (el as HTMLButtonElement).disabled = true;
   const originalText = el.textContent;
@@ -189,8 +189,7 @@ container.addEventListener('click', async (e) => {
     await addToWishlist(pid);
     el.textContent = 'Dodano ✓';
 
-    // (opcionalno) osveži korpu nakon dodavanja
-    // location.hash = '#/korpa'; // ili pozovi load() na wishlist strani
+   
     setTimeout(() => { el.textContent = originalText ?? 'Dodaj u korpu'; }, 1200);
   } catch (err: any) {
     console.error('[add-to-cart] error', err);
@@ -208,8 +207,7 @@ container.addEventListener('click', async (e) => {
     try {
       const products = await fetchProductsQuery();
 
-      // 🔎 (Opcionalno) loguj sample da potvrdiš ključne nazive:
-      // console.log('products sample', products?.[0]);
+      
 
       all = (products || []).map(toVM);
       shown = [...all];

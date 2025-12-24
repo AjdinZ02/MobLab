@@ -1,5 +1,3 @@
-
-// src/app.ts
 import { renderProducts } from './pages/ProductsPage';
 import { renderContact } from './pages/ContactPage';
 import { renderBrands } from './pages/BrandsPage';
@@ -29,7 +27,6 @@ type UserShape = {
   userID?: number;
   roleName?: string;   // očekivano: 'Admin' za admin korisnika
   roleID?: number;     // očekivano: 1 za admin korisnika
-  // ... ostala tvoja polja
 };
 
 function getRouteFromHash(): RouteKey {
@@ -46,7 +43,6 @@ function getRouteFromHash(): RouteKey {
   if (path.startsWith('/moji-zahtjevi')) return '/moji-zahtjevi';
   if (path.startsWith('/support-admin')) return '/support-admin';
   if (path.startsWith('/wishlist')) return '/wishlist';
-  // ⬇ NOVO:
   if (path.startsWith('/proizvodi') || path === '/') return '/proizvodi';
   return '/proizvodi';
 }
@@ -54,7 +50,13 @@ function getRouteFromHash(): RouteKey {
 function getCurrentUser(): UserShape | null {
   const userJson = localStorage.getItem('user');
   try {
-    return userJson ? (JSON.parse(userJson) as UserShape) : null;
+    const parsed = userJson ? JSON.parse(userJson) : null;
+    if(!parsed)return null;
+    return {
+      userID:parsed.id || parsed.userId,
+      roleName: parsed.role,
+      roleID: parsed.role === 'Admin' ? 1 : undefined
+    };
   } catch {
     return null;
   }
@@ -62,14 +64,13 @@ function getCurrentUser(): UserShape | null {
 
 function isAdmin(user: UserShape | null): boolean {
   if (!user) return false;
-  // prilagodi po potrebi (ako ti je drugačiji key ili vrijednost)
   return user.roleName === 'Admin' || user.roleID === 1;
 }
 
 export function setupApp(root: HTMLElement): void {
   if (!root) return;
 
-  // Header + nav (dodali link za Moje narudžbe)
+  // Header + nav 
   root.innerHTML = `
     <header class="site-header">
       <div class="container header-inner">
@@ -149,7 +150,7 @@ export function setupApp(root: HTMLElement): void {
     // Guard: /support-admin samo za admin + token
     if (route === '/support-admin') {
       if (!token || !admin) {
-        location.hash = '#/login'; // ili posebna 403 stranica
+        location.hash = '#/login'; 
         return;
       }
     }

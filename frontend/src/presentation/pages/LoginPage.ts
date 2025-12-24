@@ -140,10 +140,10 @@ export function renderLogin(container: HTMLElement) {
       localStorage.setItem(
         "user",
         JSON.stringify({
-          userID: data.userId,
+          id: data.userId,
           fullName: data.fullName,
           email: data.email,
-          roleName: data.role,
+          role: data.role,
         })
       );
 

@@ -51,18 +51,6 @@ export function renderSupportPage(container: HTMLElement): void {
     const user = userJson ? JSON.parse(userJson) : null;
     const userID: number | undefined = user?.userID ?? undefined;
     
-    const token = localStorage.getItem('token');
-    const res = await fetch('/api/supporttickets', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
-      },
-    body: JSON.stringify({ subject, description, userID })
-  });
-  if (!res.ok) throw new Error(await res.text());
-  const ticket = await res.json() as SupportTicketDto;
     try {
       const ticket = await httpPost<CreateSupportTicket, SupportTicketDto>(
         '/api/supporttickets',

@@ -19,7 +19,7 @@ function escapeHtml(s: string | null | undefined) {
 function renderTable(items: any[]): string {
   if (!items.length) return `<p class="muted">Korpa je prazna.</p>`;
 
-  // 🔧 Fallback za oba stilova naziva polja (PascalCase i camelCase)
+  //  Fallback za oba stila naziva polja (PascalCase i camelCase)
   const rows = items.map((it: any, idx: number) => {
     const wid = Number(it.WishlistID ?? it.wishlistID ?? it.id ?? idx + 1);
     const name = (it.ModelName ?? it.modelName ?? it.ProductName ?? it.productName ?? 'Proizvod') as string;

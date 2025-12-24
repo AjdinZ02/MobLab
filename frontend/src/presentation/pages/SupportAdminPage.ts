@@ -1,5 +1,3 @@
-
-// src/presentation/pages/SupportAdminPage.ts
 import { httpGet, httpPatchAuth } from '../../infrastructure/http/client';
 
 type SupportTicketDto = {
